@@ -10,7 +10,7 @@ import (
 var DB *sql.DB
 
 func DataBase() {
-	dsn := "postgres://postgres:newpasword@localhost:5432/wordsdb?sslmode=disable"
+	dsn := "postgres://postgres:newpassword@localhost:5432/wordsdb?sslmode=disable"
 	var err error
 
 	DB, err = sql.Open("pgx", dsn)

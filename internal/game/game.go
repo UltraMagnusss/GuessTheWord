@@ -1,6 +1,7 @@
 package Game
 
 import (
+	"fmt"
 	"strings"
 	"wordGame/internal/data"
 )
@@ -16,7 +17,7 @@ func NewGame() *Game {
 	game := Game{
 		Score: 0,
 		Lives: 5,
-		Words: data.GetWrods(),
+		Words: data.GetWords(),
 	}
 	return &game
 }
@@ -37,16 +38,40 @@ func (g *Game) CheckAnswer(userAnswer string) bool {
 
 	if strings.TrimSpace(strings.ToLower(userAnswer)) == strings.ToLower(correctAnswer) {
 		g.Score++
+
 		return true
 	} else {
 		g.Lives--
 		return false
 	}
-
 }
 
 func (g *Game) IsGameOver() bool {
 	return g.Lives <= 0 || g.CurrentIndex >= len(g.Words)
+}
+
+func (g *Game) Run() {
+	for g.Lives > 0 && g.CurrentIndex < len(g.Words) {
+		hint := g.GetCurrentHint()
+		fmt.Println("Hint: ", hint)
+		fmt.Println("Enter your answer")
+
+		var userAnswer string
+		fmt.Scanln(&userAnswer)
+		if g.CheckAnswer(userAnswer) {
+			fmt.Printf("Correct! Score: %v, Lives: %v\n\n", g.Score, g.Lives)
+			g.CurrentIndex++
+		} else {
+			fmt.Printf("Wrong! Remaining attempts: %v\n\n", g.Lives)
+		}
+	}
+
+	if g.Lives == 0 {
+		fmt.Println("You lost!")
+	} else {
+		fmt.Println("Congratulations! You guessed all words!")
+
+	}
 }
 
 // func (g *Game) Run() {
