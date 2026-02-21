@@ -1,11 +1,15 @@
 package main
 
 import (
+	ui "wordGame/internal/UI"
 	Game "wordGame/internal/game"
 )
 
 func main() {
-	game := Game.NewGame()
+	ui.PrintMsg()
+	category := ui.ScanCat()
+	ui.CategoryConfirm(category)
+	game := Game.NewGame(category)
 	game.Run()
 }
 

@@ -1,7 +1,9 @@
 package Game
 
 import (
+	"bufio"
 	"fmt"
+	"os"
 	"strings"
 	"wordGame/internal/data"
 )
@@ -13,11 +15,11 @@ type Game struct {
 	CurrentIndex int
 }
 
-func NewGame() *Game {
+func NewGame(CategroyId int) *Game {
 	game := Game{
 		Score: 0,
 		Lives: 5,
-		Words: data.GetWords(),
+		Words: data.GetWords(CategroyId),
 	}
 	return &game
 }
@@ -51,13 +53,16 @@ func (g *Game) IsGameOver() bool {
 }
 
 func (g *Game) Run() {
-	for g.Lives > 0 && g.CurrentIndex < len(g.Words) {
+	reader := bufio.NewReader(os.Stdin)
+
+	for !g.IsGameOver() {
 		hint := g.GetCurrentHint()
 		fmt.Println("Hint: ", hint)
 		fmt.Println("Enter your answer")
 
-		var userAnswer string
-		fmt.Scanln(&userAnswer)
+		userAnswer, _ := reader.ReadString('\n')
+		userAnswer = strings.TrimSpace(userAnswer)
+
 		if g.CheckAnswer(userAnswer) {
 			fmt.Printf("Correct! Score: %v, Lives: %v\n\n", g.Score, g.Lives)
 			g.CurrentIndex++
@@ -68,6 +73,7 @@ func (g *Game) Run() {
 
 	if g.Lives == 0 {
 		fmt.Println("You lost!")
+		fmt.Println("The correct answer was: ", g.Words[g.CurrentIndex].Answer)
 	} else {
 		fmt.Println("Congratulations! You guessed all words!")
 

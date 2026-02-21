@@ -9,22 +9,23 @@ type Word struct {
 	Wordindex int
 	Hint      string
 	Answer    string
+	Categroy  string
+	CatId     int
 }
 
-func GetWords() []Word {
+func GetWords(catId int) []Word {
 	db.DataBase()
 	defer db.DB.Close()
 	var words []Word
-
 	//READ
-	rows, err := db.DB.Query("SELECT * FROM capitals")
+	rows, err := db.DB.Query("SELECT * FROM wordsToGuess WHERE catid = $1", catId)
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer rows.Close()
 	for rows.Next() {
 		var w Word
-		if err := rows.Scan(&w.Wordindex, &w.Hint, &w.Answer); err != nil {
+		if err := rows.Scan(&w.Wordindex, &w.Hint, &w.Answer, &w.Categroy, &w.CatId); err != nil {
 			log.Fatal(err)
 		}
 		words = append(words, w)
